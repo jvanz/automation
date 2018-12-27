@@ -34,13 +34,13 @@ git clone git@github.com:kubic-project/automation.git
 ```
 
 # Packages and services
-Install needed packages via caasp-devenv script.
+Install needed packages via caasp-kvm script.
 This will additionally add the current user to needed service groups.
 
 **You will need to logout of your user session and log back in again for the group membership to take effect.**
 ```
 cd ~/github/automation
-./caasp-devenv --setup
+./caasp-kvm --setup
 ```
 
 # VPN access (CaaSP only)
@@ -66,13 +66,13 @@ sudo virsh pool-start default
 # Build Cluster
 
 ```
-./caasp-devenv --build
+./caasp-kvm --build
 ```
 
 # Bootstrap Cluster
 
 ```
-./caasp-devenv --bootstrap
+./caasp-kvm --bootstrap
 ```
 
 ## CLI Syntax
