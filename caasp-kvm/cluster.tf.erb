@@ -80,6 +80,12 @@ variable "domain_name" {
   description = "The domain name"
 }
 
+variable "domain_name2" {
+  type        = "string"
+  default     = "devenv2.caasp.suse.net"
+  description = "The domain name"
+}
+
 variable "net_mode" {
   type        = "string"
   default     = "nat"
@@ -89,6 +95,12 @@ variable "net_mode" {
 variable "network" {
   type        = "string"
   default     = "10.17.0.0/22"
+  description = "Network used by the cluster"
+}
+
+variable "network2" {
+  type        = "string"
+  default     = "10.18.0.0/22"
   description = "Network used by the cluster"
 }
 
@@ -130,6 +142,13 @@ resource "libvirt_network" "network" {
     mode      = "${var.net_mode}"
     domain    = "${var.name_prefix}${var.domain_name}"
     addresses = ["${var.network}"]
+}
+
+resource "libvirt_network" "network2" {
+    name      = "${var.name_prefix}net2"
+    mode      = "${var.net_mode}"
+    domain    = "${var.name_prefix}${var.domain_name2}"
+    addresses = ["${var.network2}"]
 }
 <% end -%>
 
@@ -184,6 +203,17 @@ resource "libvirt_domain" "admin" {
     network_id     = "${libvirt_network.network.id}"
     hostname       = "${var.name_prefix}admin"
     addresses      = ["${cidrhost("${var.network}", 256)}"]
+<% else -%> 
+    bridge = "<%= ENV['CAASP_BRIDGE'] %>"
+<% end -%>
+    wait_for_lease = 1
+  }
+
+  network_interface {
+<% if ENV['CAASP_BRIDGE'] == '' -%>
+    network_id     = "${libvirt_network.network2.id}"
+    hostname       = "${var.name_prefix}admin"
+    addresses      = ["${cidrhost("${var.network2}", 256)}"]
 <% else -%> 
     bridge = "<%= ENV['CAASP_BRIDGE'] %>"
 <% end -%>
